@@ -8,7 +8,7 @@ var msgcount = 0;
 
 //Help functions
 function sendMessage() {
-    if (messageContainer.val() != "") 
+    if (messageContainer.val() != "")
     {
         socket.emit('message', messageContainer.val());
         addMessage(messageContainer.val(), "Me", new Date().toISOString(), true, msgcount+1);
@@ -70,9 +70,13 @@ function addMessage(msg, pseudo, date, self, count) {
     msgcount = count;
     if(self) var classDiv = "row message self";
     else var classDiv = "row message";
-    $("#chatEntries").append('<div class="'+classDiv+'"><div class="message-number">#'+count+'</div><p class="infos"><span class="pseudo"></span>, <time class="date" title="'+date+'">'+date+'</time></p><p class="msg"></p></div>');
+    $("#chatEntries").append('<div class="'+classDiv+'" id="msg-'+count+'"><div class="message-number">#'+count+'</div><p class="infos"><span class="pseudo"></span>, <time class="date" title="'+date+'">'+date+'</time></p><p class="msg"></p></div>');
     $("#chatEntries .pseudo").last().text(pseudo);
-    $("#chatEntries p.msg").last().text(msg);
+    var last = $("#chatEntries p.msg").last();
+    last.text(msg);
+    msg = last.html();
+    msg = msg.replace(/(#(\d+))/, '<a href="#msg-$2">$1</a>');
+    last.html(msg);
     var body = $("body")[0];
     body.scrollTop = body.scrollHeight;
     time($(".infos").last());
